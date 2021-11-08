@@ -81,7 +81,7 @@ public class ProductManagerImpl implements ProductManager{
     public List<Product> sortBySells() {
         logger.info(listaProductos);
         List<Product> l = new LinkedList<>(listaProductos);
-        l.sort((Product o1, Product o2) ->{return Integer.compare(o2.getCantidadVendidos(), o1.getCantidadVendidos());});
+        l.sort((Product o1, Product o2) -> Integer.compare(o2.getCantidadVendidos(), o1.getCantidadVendidos()));
         logger.info(l);
         return l;
     }
@@ -93,7 +93,7 @@ public class ProductManagerImpl implements ProductManager{
         p.getQuantity().forEach((k,v) -> {
             k.comprar(v);
         });
-        p.getUsuario().getListaPedidos().add(p);
+
         colaPedidos.add(p);
         logger.info(usuarioHashMap.get(p.getUsuario().getNombre()));
         logger.info(colaPedidos);
@@ -114,7 +114,14 @@ public class ProductManagerImpl implements ProductManager{
 
     @Override
     public List<Pedido> pedidosDeUsuario(Usuario u) {
-        return u.getListaPedidos();
+        List<Pedido> l = new LinkedList<>();
+        colaPedidos.forEach(pedido -> {
+            if(pedido.getUsuario().equals(u)){
+                l.add(pedido);
+            }
+        });
+
+        return l;
     }
 
     public void cleanCache() {

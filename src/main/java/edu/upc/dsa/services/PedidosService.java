@@ -1,10 +1,7 @@
 package edu.upc.dsa.services;
 
 import edu.upc.dsa.models.Track;
-import edu.upc.dsa.pedidos.Pedido;
-import edu.upc.dsa.pedidos.Product;
-import edu.upc.dsa.pedidos.ProductManagerImpl;
-import edu.upc.dsa.pedidos.Usuario;
+import edu.upc.dsa.pedidos.*;
 import io.swagger.annotations.Api;
 
 import io.swagger.annotations.Api;
@@ -53,14 +50,17 @@ public class PedidosService {
     @GET
     @ApiOperation(value = "get all Pedidos", notes = "pedidos")
     @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Successful", response = Pedido.class, responseContainer="List"),
+            @ApiResponse(code = 201, message = "Successful", response = PedidoTO.class, responseContainer="List"),
     })
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getPedidos(){
-        List<Pedido>pedidos = new LinkedList<>(ProductManagerImpl.getInstance().getColaPedidos());
+        List<PedidoTO>pedidos = new LinkedList<>();
+        ProductManagerImpl.getInstance().getColaPedidos().forEach((pedido -> {
+            pedidos.add(new PedidoTO(pedido.getUsuario(), pedido.getProducts()));
+        }));
 
-        GenericEntity<List<Pedido>> entity = new GenericEntity<List<Pedido>>(pedidos){};
+        GenericEntity<List<PedidoTO>> entity = new GenericEntity<List<PedidoTO>>(pedidos){};
         return Response.status(201).entity(entity).build();
 
     }

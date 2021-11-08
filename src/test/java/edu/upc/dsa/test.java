@@ -81,7 +81,7 @@ public class test {
         Pedido[] arr = {pedido};
         Assert.assertArrayEquals(arr, productManager.getColaPedidos().toArray());
 
-        Assert.assertArrayEquals(arr, productManager.getUsuarioHashMap().get("Caty").getListaPedidos().toArray());
+        Assert.assertArrayEquals(arr, productManager.pedidosDeUsuario(productManager.getUsuarioHashMap().get("Caty")).toArray());
         Assert.assertEquals( 6,pedido.getProducts().get(0).getCantidadVendidos());
 
     }
