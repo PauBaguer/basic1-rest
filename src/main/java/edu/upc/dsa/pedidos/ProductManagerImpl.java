@@ -116,7 +116,7 @@ public class ProductManagerImpl implements ProductManager{
     public List<Pedido> pedidosDeUsuario(Usuario u) {
         List<Pedido> l = new LinkedList<>();
         colaPedidos.forEach(pedido -> {
-            if(pedido.getUsuario().equals(u)){
+            if(pedido.getUsuario().getNombre().equals(u.getNombre())){
                 l.add(pedido);
             }
         });

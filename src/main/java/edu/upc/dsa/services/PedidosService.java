@@ -98,7 +98,7 @@ public class PedidosService {
     @GET
     @ApiOperation(value = "get all Pedidos", notes = "pedidos")
     @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Successful", response = Pedido.class, responseContainer="List"),
+            @ApiResponse(code = 201, message = "Successful", response = PedidoTO.class, responseContainer="List"),
             @ApiResponse(code = 404, message = "User not found")
     })
     @Path("/pedidosUsuario/{nombre}")
@@ -106,32 +106,33 @@ public class PedidosService {
     public Response getPedidosUsuario(@PathParam("nombre") String nombre){
         Usuario u = ProductManagerImpl.getInstance().getUsuarioHashMap().get(nombre);
         if(u==null) return Response.status(404).build();
-        List<Pedido>pedidos = new LinkedList<>(ProductManagerImpl.getInstance().pedidosDeUsuario(u));
+        List<PedidoTO>pedidos = new LinkedList<>();
+        ProductManagerImpl.getInstance().pedidosDeUsuario(u).forEach(pedido -> pedidos.add(new PedidoTO(pedido.getUsuario(), pedido.getProducts())));
 
-        GenericEntity<List<Pedido>> entity = new GenericEntity<List<Pedido>>(pedidos){};
+        GenericEntity<List<PedidoTO>> entity = new GenericEntity<List<PedidoTO>>(pedidos){};
         return Response.status(201).entity(entity).build();
 
     }
 
-    /*
+
     @POST
     @ApiOperation(value = "crear pedido", notes = "asdasd")
     @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Successful", response=Pedido.class),
+            @ApiResponse(code = 201, message = "Successful", response=PedidoBuilder.class),
             @ApiResponse(code = 500, message = "Validation Error")
 
     })
 
     @Path("/")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response newTrack(Pedido pedido) {
+    public Response newTrack(PedidoBuilder pedido) {
 
-        if (track.getSinger()==null || track.getTitle()==null)  return Response.status(500).entity(track).build();
-        this.tm.addTrack(track);
-        return Response.status(201).entity(track).build();
+        if (pedido.getUsuarioName()==null || pedido.getProductNameList()==null)  return Response.status(500).entity(pedido).build();
+        ProductManagerImpl.getInstance().realizarPedido(pedido.buildPedido());
+        return Response.status(201).entity(pedido).build();
     }
 
-     */
+
 
     @DELETE
     @ApiOperation(value = "servir Producto", notes = "asdasd")
